@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-8zu8a1YG+lwH10Uuy8tbbhkJzY+qdiMUoUcSLLuXeQE='; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'">
+<title>Connecting to FUN with Worksheets…</title>
+<style>body{font:16px system-ui,sans-serif;color:#1F2A5A;background:#fff;margin:0;padding:48px 16px;text-align:center}</style>
+</head>
+<body>
+<p id="msg">Connecting to FUN with Worksheets…</p>
+<script>(function () {
+  var TARGET = 'https://funwithworksheets.com/manage/insights/callback/';
+  var q = new URLSearchParams(location.search);
+  history.replaceState(null, '', location.pathname); // keep the code out of history
+  var state = q.get('state') || '', code = q.get('code') || '', error = q.get('error') || '';
+  var msg = document.getElementById('msg');
+  if (!/^[a-f0-9]{16,64}$/.test(state) || (!code && !error) ||
+      (code && !/^[A-Za-z0-9\/_.~-]{10,600}$/.test(code)) || (error && !/^[a-z_]{1,60}$/.test(error))) {
+    msg.textContent = 'This page only passes a Google sign-in back to funwithworksheets.com. Nothing to do here.';
+    return;
+  }
+  var h = 'state=' + encodeURIComponent(state);
+  if (code) h += '&code=' + encodeURIComponent(code);
+  if (error) h += '&error=' + encodeURIComponent(error);
+  // After "#": the browser keeps it, so the website's firewall never sees Google's extra parameters.
+  location.replace(TARGET + '#' + h);
+})();
+</script>
+</body>
+</html>
